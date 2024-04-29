@@ -10,8 +10,6 @@
 #include <QApplication>
 #include <QWidget>
 #include <QLineEdit>
-#include <QDesktopServices>
-#include <QUrl>
 
 class Calculator :public QWidget {
 public:
@@ -19,12 +17,14 @@ public:
     ~Calculator();
 
 private:
-    double result = 0.0;
     std::vector<QPushButton*> numbers;
     std::vector<QString> symbols = {"0", "1", "2", "3","4", "5","6","7", "8", "9"};
     QString Operation;
     QGridLayout *grid;
     QLineEdit *lineEdit;
+    QVector<double> number;
+    double resultt;
+    QVector<QString> operations;
 
 public slots:
     void clearAll();
