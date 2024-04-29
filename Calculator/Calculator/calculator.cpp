@@ -1,11 +1,8 @@
 #include "calculator.h"
 
-double num1 = 0.0;
-
 Calculator::Calculator() {
     lineEdit = new QLineEdit(this);
     lineEdit->setReadOnly(true);
-    result = 0.0;
 
     grid = new QGridLayout(this);
     grid->setSpacing(5);
@@ -32,7 +29,6 @@ Calculator::Calculator() {
     Btn9->setStyleSheet("font-size: 18px;");
 
     lineEdit->setReadOnly(true);
-    result = 0.0;
     setFixedSize(350,400);
 
     grid->addWidget(Btn9,6,2);
@@ -113,36 +109,42 @@ void Calculator::square() {
 
 void Calculator::mathOperation(QString oprt) {
     if (!lineEdit->text().isEmpty()) {
-        num1 = lineEdit->text().toDouble();
+        number.push_back(lineEdit->text().toDouble());
         lineEdit->clear();
+        operations.push_back(oprt);
     }
-    Operation = oprt;
 }
 
 void Calculator::equal() {
-    double num2 = lineEdit->text().toDouble();
-    if (Operation == "+") {
-        result = num1 + num2;
+    if (!lineEdit->text().isEmpty()) {
+        number.push_back(lineEdit->text().toDouble());
     }
-    else if (Operation == "-") {
-        result = num1 - num2;
+
+    double resultt = number[0];
+    for(int i = 0; i < operations.size(); ++i) {
+    if (operations[i] == "+") {
+        resultt += number[i+1];
     }
-    else if (Operation == "*") {
-        result = num1 * num2;
+    else if  (operations[i] == "-") {
+        resultt -= number[i+1];
     }
-    else if (Operation == "/") {
-        if (num2 != 0.0) {
-            result = num1 / num2;
+    else if (operations[i] == "*") {
+        resultt *= number[i+1];
+    }
+    else if (operations[i] == "/") {
+        if (number[i+1] != 0.0) {
+            resultt /= number[i+1];
         }
         else {
             lineEdit->setText("Error");
             return;
         }
     }
+    }
 
-    lineEdit->setText(QString::number(result));
-    result = 0.0;
-    num1 = 0.0;
+    lineEdit->setText(QString::number(resultt));
+    number.clear();
+    operations.clear();
 }
 
 void Calculator::pointAndNum() {
@@ -159,7 +161,7 @@ void Calculator::pointAndNum() {
             return;
         }
 
-        if (text == "0" && num == ".") {
+        if ((text.isEmpty() || text == "0") && num == ".") {
             lineEdit->setText("0.");
         }
 
@@ -171,19 +173,12 @@ void Calculator::pointAndNum() {
 
 void Calculator::zero() {
     lineEdit->insert("0");
-    result = 0.0;
 }
 
 void Calculator::clearAll() {
-    QString currentText = lineEdit->text();
-    if (!currentText.isEmpty()) {
-        currentText.chop(1);
-        lineEdit->setText(currentText);
-        if (lineEdit->text().isEmpty()) {
-            lineEdit->setText("0");
-        }
-
-    }
+    lineEdit->clear();
+    number.clear();
+    operations.clear();
 }
 
 Calculator::~Calculator() {
